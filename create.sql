@@ -35,7 +35,6 @@ PRINT 'Creating database.....';
 
 CREATE DATABASE airline;
 
-PRINT 'Database created.'
 
 GO
 
@@ -45,12 +44,84 @@ USE airline;
 
 GO
 
+-- Create databse tables
 
-
-
-
-
-
+-- Country table, stores details about countries. 
+CREATE TABLE Country
+(    CountryCode CHAR(3) NOT NULL PRIMARY KEY,
+     CountryName VARCHAR(60) NOT NULL
+)
+-- Airport table, stores details abour airports. 
+CREATE TABLE Airport
+(    IATAcode CHAR(3) NOT NULL PRIMARY KEY,
+     CountryCode CHAR(3) NOT NULL FOREIGN KEY REFERENCES Country(CountryCode),
+     AirportName VARCHAR(60) NOT NULL,
+	 Latitude DECIMAL(9,6) NOT NULL,
+	 Longitude DECIMAL(9,6) NOT NULL
+)
+-- Flight_Path table, stores details about flight paths.
+CREATE TABLE Flight_Path
+(    FlightPathNum VARCHAR(10) NOT NULL PRIMARY KEY,
+     DepartureAirport CHAR(3) NOT NULL FOREIGN KEY REFERENCES Airport(IATAcode),
+	 ArrivalAirport CHAR(3) NOT NULL FOREIGN KEY REFERENCES Airport(IATAcode),
+	 Distance SMALLINT NOT NULL
+)
+-- Attendee table, stores details of flight attendants. 
+CREATE TABLE Attendee
+(    AttendeeID SMALLINT NOT NULL IDENTITY PRIMARY KEY,
+     Mentor SMALLINT NULL FOREIGN KEY REFERENCES Attendee(AttendeeID),
+	 FirstName VARCHAR(15) NOT NULL,
+	 LastName VARCHAR(15) NOT NULL,
+	 Language VARCHAR(40) NOT NULL
+)
+-- Model table, stores plane model details.
+CREATE TABLE Model
+(    ModelNum VARCHAR(9) NOT NULL PRIMARY KEY,
+     ManufacturerName VARCHAR(20) NOT NULL,
+	 TravelRange SMALLINT NOT NULL,
+	 CruisingSpeed SMALLINT NOT NULL,
+)
+-- Plan table, stores details of planes. 
+CREATE TABLE Plane
+(    RegoNum VARCHAR(6) NOT NULL PRIMARY KEY,
+     ModelNum VARCHAR(9) NOT NULL FOREIGN KEY REFERENCES Model(ModelNum),
+	 BuildYear SMALLINT NOT NULL,
+	 FirstClassCap TINYINT NOT NULL DEFAULT(0),
+	 BusinessClassCap TINYINT NOT NULL DEFAULT(0),
+	 EconomyClassCap SMALLINT NOT NULL
+)
+-- Pilot table, stores pilots details. 
+CREATE TABLE Pilot
+(    PilotiD SMALLINT NOT NULL IDENTITY PRIMARY KEY,
+     FirstName VARCHAR(15) NOT NULL,
+	 LastName VARCHAR(15) NOT NULL,
+	 HireDate DATE NOT NULL
+)
+-- Qualified table, stores details of pilots qualifications.
+CREATE TABLE Qualified
+(    PilotID SMALLINT NOT NULL FOREIGN KEY REFERENCES Pilot(PilotID),
+     ModelNum VARCHAR(9) NOT NULL FOREIGN KEY REFERENCES Model(ModelNum),
+	 PRIMARY KEY (PilotID, ModelNum)
+)
+-- Flight_Instance tavble, stores details of flight instances.
+CREATE TABLE Flight_Instance
+(    FlightInstanceID BIGINT NOT NULL IDENTITY PRIMARY KEY,
+     RegoNum VARCHAR(6) NOT NULL FOREIGN KEY REFERENCES Plane(RegoNum),
+	 AttendeeID SMALLINT NOT NULL FOREIGN KEY REFERENCES Attendee(AttendeeID),
+	 FlightPathNum VARCHAR(10) NOT NULL FOREIGN KEY REFERENCES Flight_Path(FlightPathNum),
+	 PilotID SMALLINT NOT NULL FOREIGN KEY REFERENCES Pilot(PilotID),
+	 CoPilotID SMALLINT NOT NULL FOREIGN KEY REFERENCES Pilot(PilotID),
+	 DateTimeLeave DATETIME NOT NULL,
+	 DateTimeArrive DATETIME NOT NULL
+)
+-- Flight_Crew table, stores details of the flight crew.
+CREATE TABLE Flight_Crew
+(    AttendeeID SMALLINT NOT NULL FOREIGN KEY REFERENCES Attendee(AttendeeID),
+     FlightInstanceID BIGINT NOT NULL FOREIGN KEY REFERENCES Flight_Instance(FlightInstanceID),
+	 PRIMARY KEY (AttendeeID, FlightInstanceID)
+);
+     
+    
 
 /*	Database Population Statements
 	Following the SQL statements to create your database and its tables, you must include statements to populate the database with sufficient test data.
@@ -73,7 +144,7 @@ GO
 	If desired, additional data for this table can be found at: https://www.nationsonline.org/oneworld/country_code_list.htm
 */
 
-INSERT INTO country (country_code, country_name)
+INSERT INTO Country (CountryCode, CountryName)
 VALUES ('AU', 'Australia'),
 	   ('NZ', 'New Zealand'),
 	   ('IN', 'India'),
@@ -88,7 +159,7 @@ VALUES ('AU', 'Australia'),
 	If desired, additional data for this table can be found at: https://www.world-airport-codes.com/
 */
 
-INSERT INTO airport (airport_code, airport_name, latitude, longitude, country_code)
+INSERT INTO Airport (IATAcode, AirportName, Latitude, Longitude, CountryCode)
 VALUES ('PER', 'Perth International Airport',					-31.9403,		115.9670029,	'AU'),
 	   ('SYD', 'Sydney Kingsford Smith International Airport',	-33.9460983,	151.177002,		'AU'),
 	   ('AKL', 'Auckland International Airport',				-37.0080986,	174.7920074,	'NZ'),
@@ -104,7 +175,7 @@ VALUES ('PER', 'Perth International Airport',					-31.9403,		115.9670029,	'AU'),
 	If desired, additional data for this table can be found at: https://www.aircraftcompare.com/ (Jumbo and Mid Size Passenger Jets categories)
 */
 
-INSERT INTO model (model_num, manufacturer, travel_range, cruise_speed)
+INSERT INTO Model (ModelNum, ManufacturerName, TravelRange, CruisingSpeed)
 VALUES	('A340 300',	'Airbus',	13705,	896), 
 		('A380 800',	'Airbus',	16112,	1088), 
 		('737 600',		'Boeing',	5649,	827), 
@@ -119,7 +190,7 @@ VALUES	('A340 300',	'Airbus',	13705,	896),
 	Seating capacities were sourced from https://www.seatguru.com/ (note that the data below includes two A380 800s and two 777 200LRs, with different seating layouts).
 */
 
-INSERT INTO plane (rego_num, model_num, build_year, first_capacity, bus_capacity, econ_capacity)
+INSERT INTO plane (RegoNum, ModelNum, BuildYear, FirstClassCap, BusinessClassCap, EconomyClassCap)
 VALUES  ('VH-ABC', 'A340 300',	2010,   40, 28, 179),
 		('VH-DEF', 'A380 800',	2013,   14, 64, 406),
 		('VH-GHI', 'A380 800',	2016,   0,  58, 557),
