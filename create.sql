@@ -72,7 +72,7 @@ CREATE TABLE Attendee
      Mentor SMALLINT NULL FOREIGN KEY REFERENCES Attendee(AttendeeID),
 	 FirstName VARCHAR(15) NOT NULL,
 	 LastName VARCHAR(15) NOT NULL,
-	 Language VARCHAR(40) NOT NULL
+	 Languagee VARCHAR(40) NOT NULL
 )
 -- Model table, stores plane model details.
 CREATE TABLE Model
@@ -125,7 +125,7 @@ CREATE TABLE Flight_Crew
 
 /*	Database Population Statements
 	Following the SQL statements to create your database and its tables, you must include statements to populate the database with sufficient test data.
-	Make sure referential integrity is observed – you cannot add data to a column with a foreign key constraint if you do not yet have data in the column it references.
+	Make sure referential integrity is observed â€“ you cannot add data to a column with a foreign key constraint if you do not yet have data in the column it references.
 
 	You may wish to start working on your views and queries and write INSERT statements that add the data needed to test each one as you go.   
 	The final create.sql should be able to create your database and populate it with enough data to make sure that all views and queries return meaningful results.
@@ -145,10 +145,10 @@ CREATE TABLE Flight_Crew
 */
 
 INSERT INTO Country (CountryCode, CountryName)
-VALUES ('AU', 'Australia'),
-	   ('NZ', 'New Zealand'),
-	   ('IN', 'India'),
-	   ('CN', 'China');
+VALUES ('AUS', 'Australia'),
+	   ('NZL', 'New Zealand'),
+	   ('IND', 'India'),
+	   ('CHN', 'China');
 
 
 
@@ -160,11 +160,20 @@ VALUES ('AU', 'Australia'),
 */
 
 INSERT INTO Airport (IATAcode, AirportName, Latitude, Longitude, CountryCode)
-VALUES ('PER', 'Perth International Airport',					-31.9403,		115.9670029,	'AU'),
-	   ('SYD', 'Sydney Kingsford Smith International Airport',	-33.9460983,	151.177002,		'AU'),
-	   ('AKL', 'Auckland International Airport',				-37.0080986,	174.7920074,	'NZ'),
-	   ('DEL', 'Indhira Gandhi International Airport',			28.5664997,		77.1031036,		'IN'),
-	   ('PEK', 'Beijing Capital International Airport',			40.080101,		116.5849991,	'CN'); 
+VALUES ('PER', 'Perth International Airport',					-31.9403,		115.9670029,	'AUS'),
+	   ('SYD', 'Sydney Kingsford Smith International Airport',	-33.9460983,	151.177002,		'AUS'),
+	   ('AKL', 'Auckland International Airport',				-37.0080986,	174.7920074,	'NZL'),
+	   ('DEL', 'Indhira Gandhi International Airport',			28.5664997,		77.1031036,		'IND'),
+	   ('PEK', 'Beijing Capital International Airport',			40.080101,		116.5849991,	'CHN'); 
+
+/*	Flight Path insert statements:
+*/
+
+
+
+
+/*	Attendee insert statements:
+*/
 
 
 
@@ -190,7 +199,7 @@ VALUES	('A340 300',	'Airbus',	13705,	896),
 	Seating capacities were sourced from https://www.seatguru.com/ (note that the data below includes two A380 800s and two 777 200LRs, with different seating layouts).
 */
 
-INSERT INTO plane (RegoNum, ModelNum, BuildYear, FirstClassCap, BusinessClassCap, EconomyClassCap)
+INSERT INTO Plane (RegoNum, ModelNum, BuildYear, FirstClassCap, BusinessClassCap, EconomyClassCap)
 VALUES  ('VH-ABC', 'A340 300',	2010,   40, 28, 179),
 		('VH-DEF', 'A380 800',	2013,   14, 64, 406),
 		('VH-GHI', 'A380 800',	2016,   0,  58, 557),
@@ -198,7 +207,31 @@ VALUES  ('VH-ABC', 'A340 300',	2010,   40, 28, 179),
 		('VH-MNO', '777 200LR',	2008,   8,  35, 195),
 		('VH-PQR', '777 200LR', 2012,   8,  42, 216);
 
-		
+
+
+/*	Pilot insert statements:
+*/
+
+
+/*	Qualified insert statements:
+*/
+
+
+
+/*	Flight Instance insert statements:
+*/
+
+
+
+
+/*	Flight Crew insert statements:
+*/
+
+
+
+
+
+
 
 
 -- Write the insert statements to add data to the rest of the tables here.
